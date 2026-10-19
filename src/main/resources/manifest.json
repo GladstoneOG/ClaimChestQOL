@@ -1,0 +1,18 @@
+{
+  "Group": "com.claimchestqol",
+  "Name": "ClaimChestQOL",
+  "Version": "1.0.0",
+  "Description": "Plot claiming with corner tool & undo, plot protection (fire/explosion/block/container), friend trust, plot-wide crafting from any chest, and plot-wide quick stack via chest R button.",
+  "Authors": [
+    {
+      "Name": "GladstoneOG"
+    }
+  ],
+  "Website": "https://github.com/GladstoneOG/ClaimChestQOL",
+  "ServerVersion": "*",
+  "Dependencies": {},
+  "OptionalDependencies": {},
+  "DisabledByDefault": false,
+  "IncludesAssetPack": false,
+  "Main": "com.claimchestqol.ClaimChestPlugin"
+}
