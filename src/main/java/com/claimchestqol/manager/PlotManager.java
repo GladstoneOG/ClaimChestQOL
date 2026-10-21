@@ -511,7 +511,7 @@ public class PlotManager {
         }
         try {
             var craftingConfig = world.getGameplayConfig().getCraftingConfig();
-            int limit = craftingConfig.getBenchMaterialChestLimit();
+            int limit = Math.max(250, craftingConfig.getBenchMaterialChestLimit());
             double hRadius = craftingConfig.getBenchMaterialHorizontalChestSearchRadius();
             double vRadius = craftingConfig.getBenchMaterialVerticalChestSearchRadius();
 

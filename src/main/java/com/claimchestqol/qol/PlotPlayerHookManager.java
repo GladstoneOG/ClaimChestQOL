@@ -153,11 +153,51 @@ public final class PlotPlayerHookManager {
                     CombinedItemContainer playerInventory = InventoryComponent.getCombined(
                             store, ref, InventoryComponent.HOTBAR_FIRST);
                     if (playerInventory != null) {
-                        playerInventory.quickStackTo(plotChests.toArray(new ItemContainer[0]));
+                        int chestsStackedInto = 0;
+                        int totalItemsMoved = 0;
+
+                        // Quick-stack against each chest individually so items are only deposited into
+                        // chests that ALREADY contain that specific item, rather than routing everything
+                        // into whichever chest was first or currently open!
+                        for (ItemContainer chest : plotChests) {
+                            if (chest == null) {
+                                continue;
+                            }
+                            var tx = playerInventory.quickStackTo(chest);
+                            if (tx != null && tx.succeeded() && tx.getList() != null && !tx.getList().isEmpty()) {
+                                boolean movedInChest = false;
+                                for (var moveTx : tx.getList()) {
+                                    if (moveTx != null) {
+                                        var remTx = moveTx.getRemoveTransaction();
+                                        if (remTx != null && remTx.getSlotBefore() != null) {
+                                            int before = remTx.getSlotBefore().getQuantity();
+                                            int after = remTx.getSlotAfter() != null ? remTx.getSlotAfter().getQuantity() : 0;
+                                            int diff = before - after;
+                                            if (diff > 0) {
+                                                totalItemsMoved += diff;
+                                                movedInChest = true;
+                                            }
+                                        }
+                                    }
+                                }
+                                if (movedInChest) {
+                                    chestsStackedInto++;
+                                }
+                            }
+                        }
+
                         player.getWindowManager().markWindowChanged(action.inventorySectionId);
-                        ClaimToolUtil.sendMsg(playerRef,
-                                "Quick-stacked matching items across " + plotChests.size() + " chest(s) in your plot!",
-                                "#55FF55");
+                        player.getWindowManager().updateWindows();
+
+                        if (totalItemsMoved > 0) {
+                            ClaimToolUtil.sendMsg(playerRef,
+                                    "Quick-stacked " + totalItemsMoved + " matching item(s) across " + chestsStackedInto + " chest(s) in your plot!",
+                                    "#55FF55");
+                        } else {
+                            ClaimToolUtil.sendMsg(playerRef,
+                                    "No matching items in your inventory to quick-stack into plot chests.",
+                                    "#FFAA00");
+                        }
                         return;
                     }
                 }
