@@ -5,8 +5,8 @@ $ModsDir = "F:\serverht\Server\mods"
 $BuildDir = "f:\PROJECT\hytalemod\build"
 $ClassesDir = "$BuildDir\classes"
 $DistDir = "$BuildDir\dist"
-$JarName = "ClaimChestQOL-1.0.0.jar"
-$OldJarName = "PlotCraftQoL-1.0.0.jar"
+$JarName = "ClaimChestQOL-1.0.1.jar"
+$OldJars = @("PlotCraftQoL-1.0.0.jar", "ClaimChestQOL-1.0.0.jar")
 
 if (Test-Path $BuildDir) {
     cmd.exe /c "rd /s /q `"$BuildDir`""
@@ -31,11 +31,16 @@ if ($LASTEXITCODE -ne 0) {
     throw "jar packaging failed with exit code $LASTEXITCODE"
 }
 
+# Also keep a 1.0.0 named copy in dist for compatibility
+Copy-Item $OutputJar -Destination "$DistDir\ClaimChestQOL-1.0.0.jar" -Force
+
 if (Test-Path $ModsDir) {
-    $OldJarPath = "$ModsDir\$OldJarName"
-    if (Test-Path $OldJarPath) {
-        Remove-Item $OldJarPath -Force
-        Write-Host "Removed old mod jar: $OldJarPath"
+    foreach ($oldJar in $OldJars) {
+        $oldPath = "$ModsDir\$oldJar"
+        if (Test-Path $oldPath) {
+            Remove-Item $oldPath -Force
+            Write-Host "Removed old mod jar: $oldPath"
+        }
     }
     Copy-Item $OutputJar -Destination "$ModsDir\$JarName" -Force
     Write-Host "Deployed $JarName to $ModsDir\$JarName"

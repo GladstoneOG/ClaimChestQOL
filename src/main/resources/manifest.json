@@ -1,7 +1,7 @@
 {
   "Group": "com.claimchestqol",
   "Name": "ClaimChestQOL",
-  "Version": "1.0.0",
+  "Version": "1.0.1",
   "Description": "Plot claiming with corner tool & undo, plot protection (fire/explosion/block/container), friend trust, plot-wide crafting from any chest, and plot-wide quick stack via chest R button.",
   "Authors": [
     {
